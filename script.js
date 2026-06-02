@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // ── Notification permission ───────────────────────────────────────────────
     // Track which task IDs have already fired a 10-min notification this session
     const notifiedTasks = new Set();
+    // Track which task IDs have already fired a "due now" notification this session
+    const dueNowTasks = new Set();
 
     if ('Notification' in window && Notification.permission === 'default') {
         Notification.requestPermission();
@@ -21,6 +23,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 body: `"${taskTitle}" is due in 10 minutes.`,
                 icon: 'https://cdn-icons-png.flaticon.com/512/1827/1827392.png',
                 requireInteraction: true   // stays on screen until dismissed
+            });
+        }
+    }
+
+    function sendDueNowNotification(taskTitle) {
+        if (!('Notification' in window)) return;
+
+        if (Notification.permission === 'granted') {
+            new Notification('🔔 Task Due Now!', {
+                body: `"${taskTitle}" is due right now!`,
+                icon: 'https://cdn-icons-png.flaticon.com/512/1827/1827392.png',
+                requireInteraction: true
             });
         }
     }
@@ -95,6 +109,18 @@ document.addEventListener('DOMContentLoaded', function () {
             // Reset notification if task was edited to a future time beyond 10 min
             if (diffMinutes > 10 && notifiedTasks.has(taskId)) {
                 notifiedTasks.delete(taskId);
+            }
+
+            // ── Fire "due now" notification when task time arrives ────────────
+            // Window: task just became due (within the last 1 minute)
+            if (diffMinutes > -1 && diffMinutes <= 0 && !dueNowTasks.has(taskId)) {
+                dueNowTasks.add(taskId);
+                sendDueNowNotification(taskTitle);
+            }
+
+            // Reset due-now if task was rescheduled to the future
+            if (diffMinutes > 0 && dueNowTasks.has(taskId)) {
+                dueNowTasks.delete(taskId);
             }
         });
     }
