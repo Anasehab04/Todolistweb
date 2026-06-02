@@ -37,9 +37,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $new_password = $_POST['new_password'];
         $confirm_password = $_POST['confirm_password'];
 
-        if (strlen($new_password) < 8) {
+        if (strlen($new_password) < 8 || !preg_match('/[A-Z]/', $new_password) || !preg_match('/\d/', $new_password) || !preg_match('/[^A-Za-z0-9]/', $new_password)) {
 
-            $error = "Password must be at least 8 characters long";
+            $error = "Password must be at least 8 characters and include an uppercase letter, a number, and a symbol.";
             $step = 2;
 
         } elseif ($new_password != $confirm_password) {
@@ -184,14 +184,14 @@ if (isset($_SESSION['reset_email'])) {
                             type="password"
                             name="new_password"
                             id="new_password"
-                            placeholder="At least 8 characters"
+                            placeholder="At least 8 chars, uppercase, number, symbol"
                             minlength="8"
-                            oninput="checkFPLength(this)"
+                            oninput="checkFPRequirements(this)"
                             required
                         >
 
                     </div>
-                    <small id="fp-pw-hint" style="color:#e74c3c;font-size:12px;display:none;margin-top:4px;"><i class="fa-solid fa-circle-exclamation"></i> Password must be at least 8 characters</small>
+                    <small id="fp-pw-hint" style="color:#e74c3c;font-size:12px;display:none;margin-top:4px;"><i class="fa-solid fa-circle-exclamation"></i> Password must be at least 8 characters and include an uppercase letter, a number, and a symbol.</small>
 
                 </div>
 
@@ -237,9 +237,15 @@ if (isset($_SESSION['reset_email'])) {
 </div>
 
 <script>
-function checkFPLength(input) {
+function checkFPRequirements(input) {
     const hint = document.getElementById('fp-pw-hint');
-    if (input.value.length > 0 && input.value.length < 8) {
+    const value = input.value;
+    const validLength = value.length >= 8;
+    const hasUppercase = /[A-Z]/.test(value);
+    const hasNumber = /\d/.test(value);
+    const hasSymbol = /[^A-Za-z0-9]/.test(value);
+
+    if (value.length > 0 && !(validLength && hasUppercase && hasNumber && hasSymbol)) {
         hint.style.display = 'block';
     } else {
         hint.style.display = 'none';
@@ -247,3 +253,4 @@ function checkFPLength(input) {
 }
 </script>
 </body>
+</html>
