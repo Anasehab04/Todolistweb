@@ -8,7 +8,6 @@ $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // Check Email
     if (isset($_POST['check_email'])) {
 
         $email = trim($_POST['email']);
@@ -26,7 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Reset Password
     if (isset($_POST['reset_password'])) {
 
         if (!isset($_SESSION['reset_email'])) {
