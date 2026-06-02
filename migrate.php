@@ -1,8 +1,5 @@
 <?php
-/**
- * Migration: Add due_time column to tasks table
- * Run this file ONCE in your browser or via CLI:  php migrate.php
- */
+
 require_once 'config.php';
 
 try {
