@@ -87,7 +87,6 @@ $tasks = $stmt->fetchAll();
         </form>
     </div>
 
-    <!-- Stats Dashboard -->
     <div class="dashboard">
         <div class="stat-card">
             <div class="stat-icon">⏳</div>
@@ -112,7 +111,6 @@ $tasks = $stmt->fetchAll();
         </div>
     </div>
 
-    <!-- Search & Filter -->
     <div class="search-filter">
         <input type="text" id="searchInput" placeholder="🔍  Search tasks...">
         <select id="priorityFilter">
@@ -128,7 +126,6 @@ $tasks = $stmt->fetchAll();
         </select>
     </div>
 
-    <!-- Task Form -->
     <form method="POST" class="task-form">
         <div class="form-section-label">
             <?php echo $edit_task ? '✏️ Edit Task' : '＋ New Task'; ?>
@@ -172,7 +169,6 @@ $tasks = $stmt->fetchAll();
         </div>
     </form>
 
-    <!-- Tasks List -->
     <div class="tasks-header">
         <h3>📌 Your Tasks</h3>
     </div>
