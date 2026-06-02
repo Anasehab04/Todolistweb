@@ -7,8 +7,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email       = trim($_POST['email']);
     $rawPassword = $_POST['password'];
 
-    if (strlen($rawPassword) < 8) {
-        $error = "Password must be at least 8 characters long";
+    if (strlen($rawPassword) < 8 || !preg_match('/[A-Z]/', $rawPassword) || !preg_match('/\d/', $rawPassword) || !preg_match('/[^A-Za-z0-9]/', $rawPassword)) {
+        $error = "Password must be at least 8 characters and include an uppercase letter, a number, and a symbol.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Invalid email address";
     } else {
@@ -75,11 +75,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="password">Password</label>
                 <div class="input-wrap">
                     <i class="fa-solid fa-lock icon"></i>
-                    <input type="password" id="password" name="password" placeholder="At least 8 characters" autocomplete="new-password" minlength="8" required
-                           oninput="checkPasswordLength(this)">
+                    <input type="password" id="password" name="password" placeholder="At least 8 chars, uppercase, number, symbol" autocomplete="new-password" minlength="8" required
+                           oninput="checkPasswordRequirements(this)">
                 </div>
                 <small id="pw-hint" style="color:#e74c3c;font-size:12px;display:none;margin-top:4px;">
-                    <i class="fa-solid fa-circle-exclamation"></i> Password must be at least 8 characters
+                    <i class="fa-solid fa-circle-exclamation"></i> Password must be at least 8 characters and include an uppercase letter, a number, and a symbol.
                 </small>
             </div>
 
@@ -94,14 +94,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </div>
 <script>
-function checkPasswordLength(input) {
+function checkPasswordRequirements(input) {
     const hint = document.getElementById('pw-hint');
-    if (input.value.length > 0 && input.value.length < 8) {
+    const value = input.value;
+    const validLength = value.length >= 8;
+    const hasUppercase = /[A-Z]/.test(value);
+    const hasNumber = /\d/.test(value);
+    const hasSymbol = /[^A-Za-z0-9]/.test(value);
+
+    if (value.length > 0 && !(validLength && hasUppercase && hasNumber && hasSymbol)) {
         hint.style.display = 'block';
     } else {
         hint.style.display = 'none';
     }
 }
+
+document.querySelector('form').addEventListener('submit', function (event) {
+    const password = document.getElementById('password').value;
+    const meetsRequirements = password.length >= 8 && /[A-Z]/.test(password) && /\d/.test(password) && /[^A-Za-z0-9]/.test(password);
+
+    if (!meetsRequirements) {
+        document.getElementById('pw-hint').style.display = 'block';
+        event.preventDefault();
+    }
+});
 </script>
 </body>
 </html>
