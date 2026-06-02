@@ -5,7 +5,7 @@ session_start();
 $step = 1;
 $message = "";
 $error = "";
-//
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($_POST['check_email'])) {
